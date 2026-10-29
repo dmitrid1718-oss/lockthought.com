@@ -60,11 +60,8 @@
  function openCapsule(id){const c=capsules.find(v=>v.id===id);if(!c)return;byId('modalTitle').textContent=c.title||'Untitled thought';byId('modalText').textContent=c.body;byId('modalMeta').textContent=`SEALED ${new Date(c.createdAt).toLocaleDateString()}${c.tag?' · '+c.tag:''}`;byId('overlay').classList.add('show');byId('closeModal').textContent='Close capsule';byId('closeModal').onclick=()=>{byId('overlay').classList.remove('show')};}
  byId('overlay').addEventListener('click',e=>{if(e.target===byId('overlay'))byId('overlay').classList.remove('show')});document.addEventListener('keydown',e=>{if(e.key==='Escape'){byId('overlay').classList.remove('show');byId('gate').classList.remove('show')}});
  render();if(safeRead())openGate(null);
- // Anonymous page presence and active-time signals only. No title, capsule text, passphrase, tag, IP, or country is sent by this client.
- const supabase='https://znzoepudtfpsxoglkyia.supabase.co',publicKey='sb_publishable_XySCbewhCGiQXPGMui5peA_SiZz0VqA';let visitor;try{visitor=localStorage.getItem(VISITOR);if(!visitor){visitor=crypto.randomUUID();localStorage.setItem(VISITOR,visitor)}}catch{visitor=crypto.randomUUID()}
- let session;try{session=sessionStorage.getItem(SESSION);if(!session){session=crypto.randomUUID();sessionStorage.setItem(SESSION,session)}}catch{session=crypto.randomUUID()}
- const send=event_type=>fetch(supabase+'/rest/v1/site_visit_events',{method:'POST',keepalive:true,headers:{apikey:publicKey,Authorization:'Bearer '+publicKey,'Content-Type':'application/json',Prefer:'return=minimal'},body:JSON.stringify({visitor_id:visitor,session_id:session,event_type,project_slug:'lockthought'})}).catch(()=>{});send('view');const beat=setInterval(()=>{if(!document.hidden)send('heartbeat')},20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)send('heartbeat')});window.addEventListener('pagehide',()=>{clearInterval(beat);send('heartbeat')});
 })();
 </script>
+<script defer src="/ui-visits.js"></script>
 </body>
 </html>
